@@ -17,20 +17,28 @@ jobs:
         sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
         xcodebuild -version
 
-    - name: Build
+    - name: Clean
+      run: make clean
+
+    - name: Resolve & Build
       run: |
-        # Step 1: Resolve SPM packages (separate action, cannot combine with build)
+        # Both resolve and build MUST use -derivedDataPath to share the same cache
+        mkdir -p DerivedData
+
+        # Step 1: Resolve SPM packages into shared DerivedData
         xcodebuild -project Whitelist.xcodeproj \
           -target Whitelist \
           -configuration Release \
           -sdk iphoneos \
+          -derivedDataPath DerivedData \
           -resolvePackageDependencies
 
-        # Step 2: Actual build (packages are now cached in DerivedData)
+        # Step 2: Build (same DerivedData = finds resolved packages)
         xcodebuild -project Whitelist.xcodeproj \
           -target Whitelist \
           -configuration Release \
           -sdk iphoneos \
+          -derivedDataPath DerivedData \
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           CODE_SIGNING_ALLOWED=NO \
@@ -39,13 +47,29 @@ jobs:
           DEVELOPMENT_ASSET_PATHS="" \
           build
 
-    - name: Package IPA
+    - name: Find and Package IPA
       run: |
+        APP_PATH=$(find DerivedData -name "Whitelist.app" -type d 2>/dev/null | head -1)
+        BUILD_PATH=$(find build -name "Whitelist.app" -type d 2>/dev/null | head -1)
+        echo "DerivedData app: $APP_PATH"
+        echo "Build dir app: $BUILD_PATH"
         chmod a+x bin/ldid
-        bin/ldid -S"entitlements.plist" "build/Release-iphoneos/Whitelist.app"
-        rm -rf Payload
-        mkdir Payload
-        cp -r build/Release-iphoneos/Whitelist.app Payload
+        if [ -n "$BUILD_PATH" ]; then
+          bin/ldid -S"entitlements.plist" "$BUILD_PATH"
+          rm -rf Payload
+          mkdir Payload
+          cp -r "$BUILD_PATH" Payload
+        elif [ -n "$APP_PATH" ]; then
+          bin/ldid -S"entitlements.plist" "$APP_PATH"
+          rm -rf Payload
+          mkdir Payload
+          cp -r "$APP_PATH" Payload
+        else
+          echo "ERROR: Whitelist.app not found!"
+          find DerivedData -name "*.app" -type d 2>/dev/null
+          find build -name "*.app" -type d 2>/dev/null
+          exit 1
+        fi
         zip -r Whitelist.ipa Payload
 
     - name: Upload IPA
