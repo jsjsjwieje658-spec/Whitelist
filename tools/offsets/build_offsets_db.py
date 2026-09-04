@@ -311,28 +311,39 @@ def find_allproc_signature(raw, info):
 
 # ─────────────────── method B: XPF shutdownwait port ───────────────────
 def find_allproc_xpf(raw, info):
+    # Faithful port of opa334/XPF xpf_find_allproc (HEAD, incl. the 2026-08
+    # commit that fixed higher iOS 26 versions). XPF's REFERENCE xref mask
+    # covers ADR | ADRP_ADD | ADRP_LDR | ADRP_STR; the previous port scanned
+    # ADRP_ADD only, which is exactly why iOS 18+/26 resolved nothing (the
+    # panic site there materialises the string with ADR, not adrp+add).
     KOFF = info['koff']
-    A = raw.find(b'shutdownwait\x00')
-    if A < 0:
-        return []
-    str_va = None
-    for sn, ss, sa, ssz, sfo in info['sections']:
-        if not (ss and sfo): continue
-        lo, hi = KOFF + sfo, KOFF + sfo + ssz
-        if lo <= A < hi:
-            str_va = sa + (A - lo); break
-    if str_va is None:
-        # many kernelcaches do not enumerate string sections - fall back to
-        # segment-level VA computation
+
+    def segs_covering(off):
         for nm, va0, vsz, fo, fsz in info['segs']:
             if not fsz: continue
             lo, hi = KOFF + fo, KOFF + fo + fsz
-            if lo <= A < hi:
-                str_va = va0 + (A - lo)
-                log(f'  str_va via segment {nm}: {hex(str_va)}')
-                break
-    if str_va is None:
+            if lo <= off < hi:
+                return (nm, va0, lo)
+        return None
+
+    # 1. every occurrence of the string inside the KERNEL entry segments
+    str_vas = []
+    needle = b'shutdownwait\x00'
+    pos = 0
+    while True:
+        A = raw.find(needle, pos)
+        if A < 0: break
+        pos = A + 1
+        c = segs_covering(A)
+        if c:
+            nm, va0, lo = c
+            str_vas.append((va0 + (A - lo), nm))
+    if not str_vas:
+        log('  xpf: "shutdownwait" not found inside kernel segments')
         return []
+    log('  xpf: string occurrences: ' +
+        ', '.join(f'{hex(v)} ({n})' for v, n in str_vas))
+
     text = [s for s in info['segs'] if s[0] == '__TEXT_EXEC']
     if not text:
         return []
@@ -348,6 +359,15 @@ def find_allproc_xpf(raw, info):
         imm = (immhi << 2) | immlo
         if imm & (1 << 20): imm -= (1 << 21)
         return (rd, ((pc >> 12) << 12) + (imm << 12))
+    def dec_adr(insn, pc):
+        # ADR (op bit 31 = 0): rd = pc + +/-1MB imm (21 bits signed)
+        if (insn & 0x9F000000) != 0x10000000: return None
+        rd = insn & 0x1F
+        immlo = (insn >> 29) & 3
+        immhi = (insn >> 5) & 0x3FFFF
+        imm = (immhi << 2) | immlo
+        if imm & (1 << 20): imm -= (1 << 21)
+        return (rd, pc + imm)
     def dec_add(insn):
         if (insn & 0xFF800000) != 0x91000000 or (insn >> 22) & 1: return None
         return ((insn & 0x1F), (insn >> 5) & 0x1F, (insn >> 10) & 0xFFF)
@@ -356,21 +376,33 @@ def find_allproc_xpf(raw, info):
         return (((insn >> 10) & 0xFFF) * 8, (insn >> 5) & 0x1F,
                 'ldr' if (insn & 0xFFC00000) == 0xF9400000 else 'str')
 
-    sites, adrp_at = [], {}
+    str_set = {v for v, _ in str_vas}
+    sites = []          # (site_idx, dest_reg) - REFERENCE-type xrefs
+    adrp_at = {}
     for idx in range(n):
         insn = insns[idx]
         a = dec_adrp(insn, tva + idx * 4)
         if a:
             adrp_at[a[0]] = (idx, a[1]); continue
+        d = dec_adr(insn, tva + idx * 4)
+        if d:
+            if d[1] in str_set:
+                sites.append((idx, d[0]))
+            continue
         b = dec_add(insn)
         if b:
             rd, rn, o = b
-            if rn in adrp_at and idx - adrp_at[rn][0] <= 4 and adrp_at[rn][1] + o == str_va:
-                sites.append(idx)
+            if rn in adrp_at and idx - adrp_at[rn][0] <= 4 and adrp_at[rn][1] + o in str_set:
+                sites.append((idx, rd))
+    log('  xpf: string xref sites: ' +
+        ', '.join(f'{hex(tva + s*4)}(x{rd})' for s, rd in sites) if sites else '  xpf: no xref sites')
+
     # 2.-4. per site: XPF procedure - ensure x3, first u64 ldr, resolve adrp(+add) ref
     def mov_to_x3(insn):
-        # orr x3, xzr, Xm   (mov x3, Xm)
-        if (insn & 0xFFE0FFE0) != 0xAA2003E0 or (insn & 0x1F) != 3:
+        # orr x3, xzr, Xm   (mov x3, Xm) = 0xAA0003E0 | (Rm << 16)
+        # (the previous constant 0xAA2003E0 wrongly set bit 21/N and could
+        #  never match a real mov - dormant until iOS 18 needed this path)
+        if (insn & 0xFFE0FFE0) != 0xAA0003E0 or (insn & 0x1F) != 3:
             return None
         return (insn >> 16) & 0x1F
     def dec_b(insn, pc):
@@ -380,8 +412,7 @@ def find_allproc_xpf(raw, info):
         return pc + imm26 * 4
 
     results = []
-    for site in sites:
-        rd, _, _ = dec_add(insns[site])
+    for site, rd in sites:
         before_ldr = site
         if rd != 3:
             # XPF: advance until "mov x3, <target>", following unconditional b

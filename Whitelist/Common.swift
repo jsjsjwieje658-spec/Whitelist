@@ -34,23 +34,63 @@ var blankplist: String { return blankPlist }
 
 /// Overwrite a file using kernel exploit primitives.
 /// This is the PRIMARY method when kernel exploit is available.
-/// Falls back to CVE-2022-46689 race condition if kernel exploit fails.
+/// Falls back to (1) a direct POSIX write when the process is already
+/// unsandboxed (TrollStore / vphone jb VM / FDA install) and then
+/// (2) the CVE-2022-46689 race condition.
 func overwriteFileWithKernelExploit(path: String, data: Data) -> Bool {
     let manager = KernelExploitManager.shared
-    
-    guard manager.isExploitSuccessful else {
-        os_log(.debug, "Kernel exploit not available, falling back to legacy method")
-        return overwriteFileWithLegacyExploit(path: path, replacementData: data)
+
+    if manager.isExploitSuccessful {
+        // Use kernel write primitives
+        let success = manager.overwriteFile(path: path, data: data)
+        if success {
+            print("Successfully overwrote via kernel exploit: \(path)")
+        } else {
+            print("Kernel exploit write failed for \(path)")
+        }
+        return success
     }
-    
-    // Use kernel write primitives
-    let success = manager.overwriteFile(path: path, data: data)
-    if success {
-        print("Successfully overwrote via kernel exploit: \(path)")
-    } else {
-        print("Kernel exploit write failed for \(path)")
+
+    os_log(.debug, "Kernel exploit not available - trying direct write (TrollStore/FDA)")
+    if directWriteAsUnsandboxed(path: path, data: data) {
+        return true
     }
-    return success
+    return overwriteFileWithLegacyExploit(path: path, replacementData: data)
+}
+
+// MARK: - Direct Write (already-unsandboxed installs)
+
+/// Plain POSIX create/overwrite for installs that run without a sandbox.
+/// TrollStore apps and vphone `jb` VMs are unsandboxed + root-ish, so they
+/// can simply create/overwrite the ban databases without any exploit.
+/// A sandboxed sideload fails at open/stat and the caller falls through.
+func directWriteAsUnsandboxed(path: String, data: Data) -> Bool {
+    var sb = stat()
+    if stat("/private/var/db", &sb) != 0 {
+        return false
+    }
+
+    // Create missing parents (fresh devices have no MobileIdentityData files)
+    let dir = (path as NSString).deletingLastPathComponent
+    if !FileManager.default.fileExists(atPath: dir) {
+        try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true)
+    }
+
+    let fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644)
+    guard fd >= 0 else {
+        print("Direct write: open(\(path)) failed: \(String(cString: strerror(errno)))")
+        return false
+    }
+    defer { close(fd) }
+    let written = data.withUnsafeBytes { raw -> Int in
+        guard let base = raw.baseAddress else { return -1 }
+        return write(fd, base, data.count)
+    }
+    if written == data.count {
+        print("Successfully wrote directly (already unsandboxed): \(path)")
+        return true
+    }
+    return false
 }
 
 // MARK: - Legacy File Overwrite (CVE-2022-46689)
@@ -58,6 +98,12 @@ func overwriteFileWithKernelExploit(path: String, data: Data) -> Bool {
 /// Legacy file overwrite using CVE-2022-46689 race condition.
 /// Kept as fallback when kernel exploit is not available.
 func overwriteFileWithLegacyExploit(path: String, replacementData: Data) -> Bool {
+    // The CVE race can only overwrite EXISTING files - report a missing
+    // target precisely instead of a generic "could not open" error.
+    if !FileManager.default.fileExists(atPath: path) {
+        print("Legacy method: \(path) does not exist on this device (no bans stored - nothing to overwrite).")
+        return false
+    }
     // open and map original font
     let fd = open(path, O_RDONLY | O_CLOEXEC)
     if fd == -1 {
@@ -145,9 +191,17 @@ func overwriteCdHashes() -> Bool {
     )
 }
 
-/// Read a file's contents.
+/// Read a file's contents. Directory targets (Omega persistence) are
+/// reported as such instead of a confusing read error.
 func readFile(path: String) -> String? {
-    return (try? String?(String(contentsOfFile: path)) ?? "ERROR: Could not read from file! Are you running in the simulator or not unsandboxed?")
+    var sb = stat()
+    if stat(path, &sb) == 0 && (sb.st_mode & S_IFMT) == S_IFDIR {
+        return "(directory - Omega persistence active, the system cannot store ban entries here)"
+    }
+    guard let contents = try? String(contentsOfFile: path) else {
+        return nil
+    }
+    return contents
 }
 
 // MARK: - Exploit Status

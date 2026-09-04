@@ -31,6 +31,13 @@ DEVICE_SOC = [
     ("iPhone15,2", "iphone15"), ("iPhone15,3", "iphone15"),
     # A15 (iPhone 14/14 Plus)
     ("iPhone14,7", "iphone15"), ("iPhone14,8", "iphone15"),
+    # A16 (iPhone 15/15 Plus)
+    ("iPhone15,4", "iphone15"), ("iPhone15,5", "iphone15"),
+    # A17 Pro (iPhone 15 Pro family - no DB entries yet, harmless mapping)
+    ("iPhone16,1", "iphone16"), ("iPhone16,2", "iphone16"),
+    # A18 / A18 Pro (iPhone 16 family - shared kernelcache.release.iphone17)
+    ("iPhone17,1", "iphone17"), ("iPhone17,2", "iphone17"),
+    ("iPhone17,3", "iphone17"), ("iPhone17,4", "iphone17"),
 ]
 
 def main():
@@ -121,19 +128,27 @@ def main():
     ra('Same-build/different-SoC pairs (20G81, 21H16) demonstrate that the lookup')
     ra('key MUST be (build, kernelcache-suffix) - offsets differ per kernelcache.')
     ra('')
-    ra('## iOS 18.x / 26.x status')
+    ra('## iOS 18.x / 26.x status - RESOLVED')
     ra('')
-    ra('Tested: 18.0.1/18.1.1/18.2.1/18.3.2/18.4.1/18.5 (22A3370..22F76, t8140),')
-    ra('18.6.2 (22G100, t8140), 26.6.1 (23G83, A18 Pro).')
+    ra('The xnu 11215 refactor (iOS 18.0) moved the allproc deref out of the')
+    ra('panic("shutdownwait") site into proc_iterate, reachable through a `b`')
+    ra('tail-call after the string is materialised into a callee-saved register')
+    ra('(x24 on the inspected builds). Two bugs in the previous offline port')
+    ra('made 18+/26 fail while the same code worked on 15-17:')
     ra('')
-    ra('The XPF shutdownwait heuristic no longer applies: starting with xnu 11215')
-    ra('(iOS 18.0) the kernel no longer dereferences allproc inside the')
-    ra('panic("shutdownwait") function - the proc walk moved into proc_iterate,')
-    ra('and the offline signature has no unique anchor. No allproc constant is')
-    ra('shipped for 18+/26; the app handles this gracefully')
-    ra('(wl_allproc_addr() returns 0 -> unsandbox unavailable), which is consistent')
-    ra('with the app gating unsandbox off on iOS 17+ anyway (proc_ro/PPL).')
-    ra('Kernel r/w on 18/26 is unaffected (ClearSword does not need allproc).')
+    ra('1. mov x3, Xm constant was 0xAA2003E0 (bit 21/N wrongly set) instead of')
+    ra('   0xAA0003E0 - the mov could never be recognised.')
+    ra('2. Only ADRP_ADD xrefs were scanned; XPF\'s REFERENCE mask also covers')
+    ra('   ADR / ADRP_LDR / ADRP_STR (the 26.x site uses ADR).')
+    ra('')
+    ra('With both fixed (current pipeline), 18.x and 26.x resolve like any other')
+    ra('version. Entries above include 22G100 (18.6.2) for iphone17/iphone15/')
+    ra('iphone14, 22C161 (18.2.1) iphone14, 23A355 (26.0.1) iphone17 and 23G83')
+    ra('(26.6.1) iphone15. Each offset is still live-validated by the app')
+    ra('(proc0/launchd chain) before any kernel write.')
+    ra('')
+    ra('unsandbox on iOS 15.2+/17+/18/26 uses the proc_ro path (ucred at')
+    ra('proc_ro+0x20/0x28) exactly like Dopamine libjailbreak - no version gate.')
     ra('')
     ra('## Runtime contract (app side)')
     ra('')

@@ -14,6 +14,7 @@ struct ContentView: View {
     @State var blacklist = true
     @State var banned: Bool = UserDefaults.standard.bool(forKey: "BannedEnabled")
     @State var cdHash: Bool = UserDefaults.standard.bool(forKey: "CdEnabled")
+    @State var persistMode: Bool = UserDefaults.standard.bool(forKey: "OmegaPersistMode")
     @State var inProgress = false
     @State var message = ""
     @State var banned_success = false
@@ -70,8 +71,11 @@ struct ContentView: View {
                             let manager = KernelExploitManager.shared
                             
                             if manager.isExploitSuccessful {
-                                // Use kernel-based removal
-                                let result = manager.removeAllBlacklists()
+                                // Use kernel-based removal (optionally with
+                                // Omega-style directory persistence)
+                                let result = persistMode
+                                    ? manager.persistAllBlacklists()
+                                    : manager.removeAllBlacklists()
                                 success = result.0
                                 success_message = result.1
                             } else {
@@ -104,7 +108,9 @@ struct ContentView: View {
                                 Haptic.shared.notify(.success)
                                 os_log(.debug, "FG: Success! See UI for details.")
                             } else {
-                                UIApplication.shared.alert(title: "Error", body: "An error occurred while writing to the file.", withButton: true)
+                                // Include the concrete failure reason (which
+                                // file, which errno) instead of a generic text.
+                                UIApplication.shared.alert(title: "Error", body: "An error occurred while writing to the file.\n\n\(success_message)", withButton: true)
                                 os_log(.debug, "FG: Error! See UI for details.")
                                 inProgress = false
                                 Haptic.shared.notify(.error)
@@ -143,6 +149,11 @@ struct ContentView: View {
                     Toggle("CDHashes", isOn: $cdHash)
                         .onChange(of: cdHash) { value in
                             UserDefaults.standard.set(value, forKey: "CdEnabled")
+                            Haptic.shared.play(.light)
+                        }
+                    Toggle("Omega persistence (replace files with directories)", isOn: $persistMode)
+                        .onChange(of: persistMode) { value in
+                            UserDefaults.standard.set(value, forKey: "OmegaPersistMode")
                             Haptic.shared.play(.light)
                         }
                 } header: {
