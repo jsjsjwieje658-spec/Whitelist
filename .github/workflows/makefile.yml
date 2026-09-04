@@ -17,6 +17,9 @@ jobs:
         sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
         xcodebuild -version
 
+    - name: Resolve Packages
+      run: xcodebuild -project Whitelist.xcodeproj -target Whitelist -resolvePackageDependencies
+
     - name: Clean
       run: make clean
 
