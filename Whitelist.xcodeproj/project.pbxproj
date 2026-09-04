@@ -28,6 +28,28 @@
 		D6EA85B8298DAEBC003CADA1 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6EA85B7298DAEBC003CADA1 /* Common.swift */; };
 		D6EA85BC298DC9C0003CADA1 /* FileContentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6EA85BB298DC9C0003CADA1 /* FileContentsView.swift */; };
 		D6EA85BE298DDB35003CADA1 /* Haptic++.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6EA85BD298DDB35003CADA1 /* Haptic++.swift */; };
+		WL0001002A00000001 /* kernel_exploit.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000001 /* kernel_exploit.c */; };
+		WL0001002A00000002 /* whitelist_primitives.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000002 /* whitelist_primitives.c */; };
+		WL0001002A00000003 /* clearsword_poc.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000003 /* clearsword_poc.c */; };
+		WL0001002A00000004 /* clearsword_krw.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000004 /* clearsword_krw.c */; };
+		WL0001002A00000005 /* clearsword_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000005 /* clearsword_socket.c */; };
+		WL0001002A00000006 /* clearsword_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000006 /* clearsword_utils.c */; };
+		WL0001002A00000007 /* free_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000007 /* free_thread.c */; };
+		WL0001002A00000008 /* phys_oob.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000008 /* phys_oob.c */; };
+		WL0001002A00000009 /* surface.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000009 /* surface.c */; };
+		WL0001002A00000010 /* KernelExploitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000010 /* KernelExploitManager.swift */; };
+		WL0002002A00000001 /* ppl_bypass.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000001 /* ppl_bypass.c */; };
+		WL0002002A00000002 /* momentarius.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000003 /* momentarius/momentarius.c */; };
+		WL0002002A00000003 /* momentarius_a12.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000005 /* momentarius/momentarius_a12.c */; };
+		WL0002002A00000004 /* momentarius_a13.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000006 /* momentarius/momentarius_a13.c */; };
+		WL0002002A00000005 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000007 /* momentarius/utils.c */; };
+		WL0002002A00000006 /* IOGPUDevice.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000009 /* titan/IOGPUDevice.c */; };
+		WL0002002A00000007 /* gfx.m in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000013 /* titan/gfx.m */; };
+		WL0002002A00000008 /* gfx_patchfinder.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000014 /* titan/gfx_patchfinder.c */; };
+		WL0002002A00000009 /* info.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000015 /* titan/info.c */; };
+		WL0002002A00000010 /* ipc_port.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000017 /* titan/ipc_port.c */; };
+		WL0002002A00000011 /* kernel_patchfinder.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000019 /* titan/kernel_patchfinder.c */; };
+		WL0002002A00000012 /* titan.m in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000025 /* titan/titan.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +98,53 @@
 		D6EA85B7298DAEBC003CADA1 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		D6EA85BB298DC9C0003CADA1 /* FileContentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileContentsView.swift; sourceTree = "<group>"; };
 		D6EA85BD298DDB35003CADA1 /* Haptic++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Haptic++.swift"; sourceTree = "<group>"; };
+		WL0001001A00000001 /* kernel_exploit.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = kernel_exploit.c; sourceTree = "<group>"; };
+		WL0001001A00000002 /* whitelist_primitives.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = whitelist_primitives.c; sourceTree = "<group>"; };
+		WL0001001A00000003 /* clearsword_poc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = clearsword_poc.c; sourceTree = "<group>"; };
+		WL0001001A00000004 /* clearsword_krw.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = clearsword_krw.c; sourceTree = "<group>"; };
+		WL0001001A00000005 /* clearsword_socket.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = clearsword_socket.c; sourceTree = "<group>"; };
+		WL0001001A00000006 /* clearsword_utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = clearsword_utils.c; sourceTree = "<group>"; };
+		WL0001001A00000007 /* free_thread.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = free_thread.c; sourceTree = "<group>"; };
+		WL0001001A00000008 /* phys_oob.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = phys_oob.c; sourceTree = "<group>"; };
+		WL0001001A00000009 /* surface.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = surface.c; sourceTree = "<group>"; };
+		WL0001001A00000010 /* KernelExploitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KernelExploitManager.swift; sourceTree = "<group>"; };
+		WL0001001A00000011 /* kernel_exploit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kernel_exploit.h; sourceTree = "<group>"; };
+		WL0001001A00000012 /* whitelist_primitives.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = whitelist_primitives.h; sourceTree = "<group>"; };
+		WL0001001A00000013 /* clearsword_common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = clearsword_common.h; sourceTree = "<group>"; };
+		WL0001001A00000014 /* clearsword_poc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = clearsword_poc.h; sourceTree = "<group>"; };
+		WL0001001A00000015 /* clearsword_krw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = clearsword_krw.h; sourceTree = "<group>"; };
+		WL0001001A00000016 /* clearsword_socket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = clearsword_socket.h; sourceTree = "<group>"; };
+		WL0001001A00000017 /* clearsword_utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = clearsword_utils.h; sourceTree = "<group>"; };
+		WL0001001A00000018 /* free_thread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = free_thread.h; sourceTree = "<group>"; };
+		WL0001001A00000019 /* phys_oob.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = phys_oob.h; sourceTree = "<group>"; };
+		WL0001001A00000020 /* surface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = surface.h; sourceTree = "<group>"; };
+		WL0001001A00000021 /* compat_libjailbreak.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = compat_libjailbreak.h; sourceTree = "<group>"; };
+		WL0001001A00000030 /* libjailbreak */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libjailbreak; sourceTree = "<group>"; };
+		WL0002001A00000001 /* ppl_bypass.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ppl_bypass.c; sourceTree = "<group>"; };
+		WL0002001A00000002 /* ppl_bypass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ppl_bypass.h; sourceTree = "<group>"; };
+		WL0002001A00000003 /* momentarius.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = momentarius/momentarius.c; sourceTree = "<group>"; };
+		WL0002001A00000004 /* momentarius.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = momentarius/momentarius.h; sourceTree = "<group>"; };
+		WL0002001A00000005 /* momentarius_a12.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = momentarius/momentarius_a12.c; sourceTree = "<group>"; };
+		WL0002001A00000006 /* momentarius_a13.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = momentarius/momentarius_a13.c; sourceTree = "<group>"; };
+		WL0002001A00000007 /* utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = momentarius/utils.c; sourceTree = "<group>"; };
+		WL0002001A00000008 /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = momentarius/utils.h; sourceTree = "<group>"; };
+		WL0002001A00000009 /* IOGPUDevice.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = titan/IOGPUDevice.c; sourceTree = "<group>"; };
+		WL0002001A00000010 /* IOGPUDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/IOGPUDevice.h; sourceTree = "<group>"; };
+		WL0002001A00000011 /* arm64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/arm64.h; sourceTree = "<group>"; };
+		WL0002001A00000012 /* gfx.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/gfx.h; sourceTree = "<group>"; };
+		WL0002001A00000013 /* gfx.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = titan/gfx.m; sourceTree = "<group>"; };
+		WL0002001A00000014 /* gfx_patchfinder.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = titan/gfx_patchfinder.c; sourceTree = "<group>"; };
+		WL0002001A00000015 /* gfx_patchfinder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/gfx_patchfinder.h; sourceTree = "<group>"; };
+		WL0002001A00000016 /* info.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/info.h; sourceTree = "<group>"; };
+		WL0002001A00000017 /* ipc_port.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = titan/ipc_port.c; sourceTree = "<group>"; };
+		WL0002001A00000018 /* ipc_port.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/ipc_port.h; sourceTree = "<group>"; };
+		WL0002001A00000019 /* kernel_patchfinder.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = titan/kernel_patchfinder.c; sourceTree = "<group>"; };
+		WL0002001A00000020 /* kernel_patchfinder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/kernel_patchfinder.h; sourceTree = "<group>"; };
+		WL0002001A00000021 /* mach_vm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/mach_vm.h; sourceTree = "<group>"; };
+		WL0002001A00000022 /* offsets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/offsets.h; sourceTree = "<group>"; };
+		WL0002001A00000023 /* titan.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/titan.h; sourceTree = "<group>"; };
+		WL0002001A00000024 /* info.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = titan/info.c; sourceTree = "<group>"; };
+		WL0002001A00000025 /* titan.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = titan/titan.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +222,7 @@
 				D6EA85BB298DC9C0003CADA1 /* FileContentsView.swift */,
 				D67C0F9829A7F3E9005267D9 /* AppDelegate.swift */,
 				D6EA85B7298DAEBC003CADA1 /* Common.swift */,
+				WL0001001A00000010 /* KernelExploitManager.swift */,
 				D6D22B7729C8DB3A0095645B /* Settings */,
 				D67C0F8E29A7EF1A005267D9 /* BackgroundUpdate */,
 				D6EA85B4298DA7D5003CADA1 /* Extensions */,
@@ -197,8 +267,41 @@
 				D6EA85B3298DA464003CADA1 /* helpers.h */,
 				D6EA85B1298DA45C003CADA1 /* helpers.m */,
 				D6EA85AA298DA421003CADA1 /* Whitelist-Bridging-Header.h */,
+				WL0001003A00000001 /* KernelExploit */,
 			);
 			path = Exploit;
+			sourceTree = "<group>";
+		};
+		WL0001003A00000001 /* KernelExploit */ = {
+			isa = PBXGroup;
+			children = (
+				WL0001001A00000011 /* kernel_exploit.h */,
+				WL0001001A00000001 /* kernel_exploit.c */,
+				WL0001001A00000012 /* whitelist_primitives.h */,
+				WL0001001A00000002 /* whitelist_primitives.c */,
+				WL0001001A00000013 /* clearsword_common.h */,
+				WL0001001A00000021 /* compat_libjailbreak.h */,
+				WL0001001A00000014 /* clearsword_poc.h */,
+				WL0001001A00000003 /* clearsword_poc.c */,
+				WL0001001A00000015 /* clearsword_krw.h */,
+				WL0001001A00000004 /* clearsword_krw.c */,
+				WL0001001A00000016 /* clearsword_socket.h */,
+				WL0001001A00000005 /* clearsword_socket.c */,
+				WL0001001A00000017 /* clearsword_utils.h */,
+				WL0001001A00000006 /* clearsword_utils.c */,
+				WL0001001A00000018 /* free_thread.h */,
+				WL0001001A00000007 /* free_thread.c */,
+				WL0001001A00000019 /* phys_oob.h */,
+				WL0001001A00000008 /* phys_oob.c */,
+				WL0001001A00000020 /* surface.h */,
+				WL0001001A00000009 /* surface.c */,
+				WL0001001A00000030 /* libjailbreak */,
+				WL0002001A00000002 /* ppl_bypass.h */,
+				WL0002001A00000001 /* ppl_bypass.c */,
+				WL0002003A00000001 /* momentarius */,
+				WL0002003A00000002 /* titan */,
+			);
+			path = KernelExploit;
 			sourceTree = "<group>";
 		};
 		D6EA85B4298DA7D5003CADA1 /* Extensions */ = {
@@ -208,6 +311,43 @@
 				D6EA85B5298DA7E5003CADA1 /* Alert++.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		WL0002003A00000001 /* momentarius */ = {
+			isa = PBXGroup;
+			children = (
+				WL0002001A00000004 /* momentarius.h */,
+				WL0002001A00000003 /* momentarius.c */,
+				WL0002001A00000005 /* momentarius_a12.c */,
+				WL0002001A00000006 /* momentarius_a13.c */,
+				WL0002001A00000008 /* utils.h */,
+				WL0002001A00000007 /* utils.c */,
+			);
+			path = momentarius;
+			sourceTree = "<group>";
+		};
+		WL0002003A00000002 /* titan */ = {
+			isa = PBXGroup;
+			children = (
+				WL0002001A00000010 /* IOGPUDevice.h */,
+				WL0002001A00000009 /* IOGPUDevice.c */,
+				WL0002001A00000011 /* arm64.h */,
+				WL0002001A00000012 /* gfx.h */,
+				WL0002001A00000013 /* gfx.m */,
+				WL0002001A00000015 /* gfx_patchfinder.h */,
+				WL0002001A00000014 /* gfx_patchfinder.c */,
+				WL0002001A00000016 /* info.h */,
+				WL0002001A00000024 /* info.c */,
+				WL0002001A00000018 /* ipc_port.h */,
+				WL0002001A00000017 /* ipc_port.c */,
+				WL0002001A00000020 /* kernel_patchfinder.h */,
+				WL0002001A00000019 /* kernel_patchfinder.c */,
+				WL0002001A00000021 /* mach_vm.h */,
+				WL0002001A00000022 /* offsets.h */,
+				WL0002001A00000023 /* titan.h */,
+				WL0002001A00000025 /* titan.m */,
+			);
+			path = titan;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -362,6 +502,28 @@
 				D67C0F9029A7EF3B005267D9 /* ApplicationMonitor.swift in Sources */,
 				D6EA85BC298DC9C0003CADA1 /* FileContentsView.swift in Sources */,
 				D6EA85B8298DAEBC003CADA1 /* Common.swift in Sources */,
+				WL0001002A00000001 /* kernel_exploit.c in Sources */,
+				WL0001002A00000002 /* whitelist_primitives.c in Sources */,
+				WL0001002A00000003 /* clearsword_poc.c in Sources */,
+				WL0001002A00000004 /* clearsword_krw.c in Sources */,
+				WL0001002A00000005 /* clearsword_socket.c in Sources */,
+				WL0001002A00000006 /* clearsword_utils.c in Sources */,
+				WL0001002A00000007 /* free_thread.c in Sources */,
+				WL0001002A00000008 /* phys_oob.c in Sources */,
+				WL0001002A00000009 /* surface.c in Sources */,
+				WL0001002A00000010 /* KernelExploitManager.swift in Sources */,
+				WL0002002A00000001 /* ppl_bypass.c in Sources */,
+				WL0002002A00000002 /* momentarius.c in Sources */,
+				WL0002002A00000003 /* momentarius_a12.c in Sources */,
+				WL0002002A00000004 /* momentarius_a13.c in Sources */,
+				WL0002002A00000005 /* utils.c in Sources */,
+				WL0002002A00000006 /* IOGPUDevice.c in Sources */,
+				WL0002002A00000007 /* gfx.m in Sources */,
+				WL0002002A00000008 /* gfx_patchfinder.c in Sources */,
+				WL0002002A00000009 /* info.c in Sources */,
+				WL0002002A00000010 /* ipc_port.c in Sources */,
+				WL0002002A00000011 /* kernel_patchfinder.c in Sources */,
+				WL0002002A00000012 /* titan.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

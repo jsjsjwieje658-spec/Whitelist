@@ -4,6 +4,8 @@
 //
 //  Created by Hariz Shirazi on 2023-02-03.
 //
+//  Updated: Shows kernel exploit status and uses unified exploit manager.
+//
 
 import SwiftUI
 import os.log
@@ -19,6 +21,7 @@ struct ContentView: View {
     @State var hash_success = false
     @State var success = false
     @State var success_message = ""
+    @State var exploitStatus = getExploitStatus()
     @ObservedObject var backgroundController = BackgroundFileUpdaterController.shared
     @State private var bgUpdateInterval: Double = UserDefaults.standard.double(forKey: "BackgroundUpdateInterval")
     @State var runInBackground: Bool = UserDefaults.standard.bool(forKey: "BackgroundApply")
@@ -37,6 +40,25 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
+                // Exploit Status Section
+                Section {
+                    HStack {
+                        Text("Exploit Status")
+                        Spacer()
+                        Text(exploitStatus)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .onAppear {
+                        // Refresh status periodically
+                        Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
+                            exploitStatus = getExploitStatus()
+                        }
+                    }
+                } header: {
+                    Label("System", systemImage: "cpu")
+                }
+                
                 Section {
                     Button(
                         action: {
@@ -44,26 +66,36 @@ struct ContentView: View {
                             Haptic.shared.play(.heavy)
                             inProgress = true
                             
-                            if banned {
-                                banned_success = overwriteBannedApps()
-                            }
-                            if cdHash {
-                                hash_success = overwriteCdHashes()
-                            } else {
-                                banned_success = false
-                                hash_success = false
-                            }
-                            success = overwriteBlacklist()
+                            // Try kernel exploit first
+                            let manager = KernelExploitManager.shared
                             
-                            // FIXME: Bad.
-                            if banned_success && hash_success {
-                                success_message = "Successfully removed: Blacklist, Banned Apps, CDHashes\nDidn't overwrite: none"
-                            } else if !banned_success && hash_success {
-                                success_message = "Successfully removed: Blacklist, CDHashes\nDidn't overwrite: Banned Apps"
-                            } else if banned_success && !hash_success {
-                                success_message = "Successfully removed: Blacklist, Banned Apps\nDidn't overwrite: CDHashes"
+                            if manager.isExploitSuccessful {
+                                // Use kernel-based removal
+                                let result = manager.removeAllBlacklists()
+                                success = result.0
+                                success_message = result.1
                             } else {
-                                success_message = "Successfully removed: Blacklist\nDidn't overwrite: Banned Apps, CDHashes"
+                                // Fall back to legacy method
+                                if banned {
+                                    banned_success = overwriteBannedApps()
+                                }
+                                if cdHash {
+                                    hash_success = overwriteCdHashes()
+                                } else {
+                                    banned_success = false
+                                    hash_success = false
+                                }
+                                success = overwriteBlacklist()
+                                
+                                if banned_success && hash_success {
+                                    success_message = "Successfully removed: Blacklist, Banned Apps, CDHashes\nDidn't overwrite: none"
+                                } else if !banned_success && hash_success {
+                                    success_message = "Successfully removed: Blacklist, CDHashes\nDidn't overwrite: Banned Apps"
+                                } else if banned_success && !hash_success {
+                                    success_message = "Successfully removed: Blacklist, Banned Apps\nDidn't overwrite: CDHashes"
+                                } else {
+                                    success_message = "Successfully removed: Blacklist\nDidn't overwrite: Banned Apps, CDHashes"
+                                }
                             }
                             
                             if success {
@@ -77,112 +109,84 @@ struct ContentView: View {
                                 inProgress = false
                                 Haptic.shared.notify(.error)
                             }
-                            inProgress = false
+                            // UPDATE BACKGROUND
+                            if runInBackground {
+                                os_log(.debug, "Updating BG")
+                                backgroundController.updateContent()
+                            }
                         },
-                        label: { Label("Apply", systemImage: "app.badge.checkmark") }
-                    )
-                } header: {
-                    Label("Make It So, Number One", systemImage: "arrow.right.circle")
-                }
-                Section {
-                    Toggle(isOn: $blacklist, label:{Label("Overwrite Blacklist", systemImage: "xmark.seal")})
-                        .toggleStyle(.switch)
-                        .disabled(true)
-                        .tint(.accentColor)
-                        .disabled(inProgress)
-                    Toggle(isOn: $banned, label:{Label("Overwrite Banned Apps", systemImage: "xmark.app")})
-                        .toggleStyle(.switch)
-                        .tint(.accentColor)
-                        .disabled(inProgress)
-                        .onChange(of: banned) { new in
-                            // set the user defaults
-                            UserDefaults.standard.set(new, forKey: "BannedEnabled")
-                        }
-                    Toggle(isOn: $cdHash, label:{Label("Overwrite CDHashes", systemImage: "number.square")})
-                        .toggleStyle(.switch)
-                        .tint(.accentColor)
-                        .disabled(inProgress)
-                        .onChange(of: cdHash) { new in
-                            // set the user defaults
-                            UserDefaults.standard.set(new, forKey: "CdEnabled")
-                        }
-                } header: {
-                    Label("Options", systemImage: "gear")
-                }
-                Section{
-                    Toggle(isOn: $runInBackground, label:{Label("Run in background", systemImage: "app.dashed")})
-                        .toggleStyle(.switch)
-                        .tint(.accentColor)
-                        .onChange(of: runInBackground) { new in
-                            // set the user defaults
-                            UserDefaults.standard.set(new, forKey: "BackgroundApply")
-                            var newWord: String = "Enabled"
-                            if new == false {
-                                newWord = "Disabled"
-                                ApplicationMonitor.shared.stop()
+                        label: {
+                            HStack {
+                                ProgressView()
+                                    .progressViewStyle(.circular)
+                                    .tint(.white)
+                                    .opacity(inProgress ? 1 : 0)
+                                Text(inProgress ? "Applying..." : "Apply")
+                                    .fontWeight(.semibold)
+                                    .frame(maxWidth: .infinity, minHeight: 38)
+                                    .animation(.easeInOut(duration: 0.1), value: inProgress)
                             }
-                            UIApplication.shared.confirmAlert(title: "Background Update \(newWord)", body: "The app will close. Re-open Whitelist to apply the change.", onOK: {
-                                exit(0)
-                            }, noCancel: true)
-                            //BackgroundFileUpdaterController.shared.enabled = new
+                            .foregroundColor(.white)
+                            .listRowBackground(inProgress ? Color.gray : Color.accentColor)
                         }
-                    // background run frequency
-                    HStack {
-                        Label("Update Frequency", systemImage: "clock.arrow.circlepath")
-                            .minimumScaleFactor(0.5)
-                        
-                        Spacer()
-                        
-                        Button( action: {
-                            // create and configure alert controller
-                            let alert = UIAlertController(title: "Update Frequency", message: "Choose an update option", preferredStyle: .actionSheet)
-                            
-                            // create the actions
-                            for (t, title) in bgUpdateIntervalDisplayTitles {
-                                let newAction = UIAlertAction(title: NSLocalizedString(title, comment: "The option title for background frequency"), style: .default) { (action) in
-                                    // apply the type
-                                    bgUpdateInterval = t
-                                    // set the default
-                                    UserDefaults.standard.set(t, forKey: "BackgroundUpdateInterval")
-                                    // update the timer
-                                    backgroundController.time = bgUpdateInterval
-                                }
-                                if bgUpdateInterval == t {
-                                    // add a check mark
-                                    newAction.setValue(true, forKey: "checked")
-                                }
-                                alert.addAction(newAction)
-                            }
-                            
-                            let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: .cancel) { (action) in
-                                // cancels the action
-                            }
-                            
-                            // add the actions
-                            alert.addAction(cancelAction)
-                            
-                            let view: UIView = UIApplication.shared.windows.first!.rootViewController!.view
-                            // present popover for iPads
-                            alert.popoverPresentationController?.sourceView = view // prevents crashing on iPads
-                            alert.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.maxY, width: 0, height: 0) // show up at center bottom on iPads
-                            
-                            // present the alert
-                            UIApplication.shared.windows.first?.rootViewController?.present(alert, animated: true)
-                        },label:{
-                            Label(bgUpdateIntervalDisplayTitles[bgUpdateInterval] ?? "Error", systemImage: bgUpdateIntervalIcons[bgUpdateInterval] ?? "")
-                            
-                        })
-                        .foregroundColor(.accentColor)
-                        .padding(.leading, 10)
-                    }
-                    
-                    
+                    ).disabled(inProgress)
                 } header: {
-                    Label("Background Update", systemImage: "location.fill")
+                    Label("Actions", systemImage: "bolt")
                 }
                 
                 Section {
-                    NavigationLink(destination: FileContentsView()) {
+                    Toggle("Banned Apps", isOn: $banned)
+                        .onChange(of: banned) { value in
+                            UserDefaults.standard.set(value, forKey: "BannedEnabled")
+                            Haptic.shared.play(.light)
+                        }
+                    Toggle("CDHashes", isOn: $cdHash)
+                        .onChange(of: cdHash) { value in
+                            UserDefaults.standard.set(value, forKey: "CdEnabled")
+                            Haptic.shared.play(.light)
+                        }
+                } header: {
+                    Label("Options", systemImage: "gearshape")
+                }
+                
+                Section {
+                    Toggle("Background Update", isOn: $runInBackground)
+                        .onChange(of: runInBackground) { value in
+                            UserDefaults.standard.set(value, forKey: "BackgroundApply")
+                            Haptic.shared.play(.light)
+                            if value {
+                                backgroundController.updateContent()
+                            }
+                        }
+                    
+                    if runInBackground {
+                        ForEach(bgUpdateIntervalDisplayTitles.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
+                            Button(action: {
+                                bgUpdateInterval = key
+                                UserDefaults.standard.set(key, forKey: "BackgroundUpdateInterval")
+                                backgroundController.updateInterval = key
+                                Haptic.shared.play(.light)
+                            }) {
+                                HStack {
+                                    Label(value, systemImage: bgUpdateIntervalIcons[key] ?? "questionmark")
+                                    Spacer()
+                                    if bgUpdateInterval == key {
+                                        Image(systemName: "checkmark")
+                                            .foregroundColor(.blue)
+                                    }
+                                }
+                            }
+                            .foregroundColor(.primary)
+                        }
+                    }
+                } header: {
+                    Label("Settings", systemImage: "gear")
+                }
+                
+                Section {
+                    NavigationLink {
+                        FileContentsView(path: "/private/var/db/MobileIdentityData/Rejections.plist")
+                    } label: {
                         Label("View contents of blacklist files", systemImage: "doc.text")
                     }
                 } header : {
