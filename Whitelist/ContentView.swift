@@ -112,7 +112,7 @@ struct ContentView: View {
                             // UPDATE BACKGROUND
                             if runInBackground {
                                 os_log(.debug, "Updating BG")
-                                backgroundController.updateContent()
+                                backgroundController.updateFiles()
                             }
                         },
                         label: {
@@ -155,7 +155,7 @@ struct ContentView: View {
                             UserDefaults.standard.set(value, forKey: "BackgroundApply")
                             Haptic.shared.play(.light)
                             if value {
-                                backgroundController.updateContent()
+                                backgroundController.updateFiles()
                             }
                         }
                     
@@ -164,7 +164,7 @@ struct ContentView: View {
                             Button(action: {
                                 bgUpdateInterval = key
                                 UserDefaults.standard.set(key, forKey: "BackgroundUpdateInterval")
-                                backgroundController.updateInterval = key
+                                backgroundController.time = key
                                 Haptic.shared.play(.light)
                             }) {
                                 HStack {
@@ -185,7 +185,7 @@ struct ContentView: View {
                 
                 Section {
                     NavigationLink {
-                        FileContentsView(path: "/private/var/db/MobileIdentityData/Rejections.plist")
+                        FileContentsView()
                     } label: {
                         Label("View contents of blacklist files", systemImage: "doc.text")
                     }

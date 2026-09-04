@@ -127,7 +127,7 @@ struct WhitelistApp: App {
                     isUnsandboxed = true
                     os_log(.info, "Sandbox bypassed via kernel exploit")
                 } else {
-                    os_log(.warning, "Kernel unsandbox failed, will use legacy method if needed")
+                    os_log(.info, "Kernel unsandbox failed, will use legacy method if needed")
                 }
             } else {
                 os_log(.error, "Kernel exploit initialization failed: %{public}@", error ?? "unknown")

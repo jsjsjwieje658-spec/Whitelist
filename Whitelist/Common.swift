@@ -9,6 +9,7 @@
 //
 
 import Foundation
+import os.log
 
 public func print(_ items: Any..., separator: String = " ", terminator: String = "\n") {
     let data = items.map { "\($0)" }.joined(separator: separator)
@@ -39,7 +40,7 @@ func overwriteFileWithKernelExploit(path: String, data: Data) -> Bool {
     
     guard manager.isExploitSuccessful else {
         os_log(.debug, "Kernel exploit not available, falling back to legacy method")
-        return overwriteFileWithLegacyExploit(path: path, data: data)
+        return overwriteFileWithLegacyExploit(path: path, replacementData: data)
     }
     
     // Use kernel write primitives
