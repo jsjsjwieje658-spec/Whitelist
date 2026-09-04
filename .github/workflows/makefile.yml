@@ -16,26 +16,26 @@ jobs:
       run: |
         sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
         xcodebuild -version
+        xcodebuild -project Whitelist.xcodeproj -list
 
     - name: Clean
-      run: make clean
-
-    - name: Resolve & Build
       run: |
-        # Both resolve and build MUST use -derivedDataPath to share the same cache
+        rm -rf DerivedData Payload Whitelist.ipa
         mkdir -p DerivedData
 
-        # Step 1: Resolve SPM packages into shared DerivedData
+    # Single scheme-based build. Using -scheme (not -target) is REQUIRED:
+    #   1. -derivedDataPath is only valid together with -scheme.
+    #   2. Scheme builds wire up SPM package search paths correctly, so the
+    #      LocalConsole dependency resolves into the SAME DerivedData that the
+    #      build consumes (fixes "no such module 'LocalConsole'").
+    #   3. Automatic SPM package resolution runs as part of the build itself,
+    #      so no separate -resolvePackageDependencies step is needed (that
+    #      flag short-circuits xcodebuild and skips compilation entirely).
+    - name: Build
+      run: |
+        set -o pipefail
         xcodebuild -project Whitelist.xcodeproj \
-          -target Whitelist \
-          -configuration Release \
-          -sdk iphoneos \
-          -derivedDataPath DerivedData \
-          -resolvePackageDependencies
-
-        # Step 2: Build (same DerivedData = finds resolved packages)
-        xcodebuild -project Whitelist.xcodeproj \
-          -target Whitelist \
+          -scheme Whitelist \
           -configuration Release \
           -sdk iphoneos \
           -derivedDataPath DerivedData \
@@ -45,31 +45,17 @@ jobs:
           ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS=NO \
           ENABLE_PREVIEWS=NO \
           DEVELOPMENT_ASSET_PATHS="" \
-          build
+          build | tee build.log || { echo '--- build log (tail) ---'; tail -n 200 build.log; exit 1; }
 
-    - name: Find and Package IPA
+    - name: Package IPA
       run: |
-        APP_PATH=$(find DerivedData -name "Whitelist.app" -type d 2>/dev/null | head -1)
-        BUILD_PATH=$(find build -name "Whitelist.app" -type d 2>/dev/null | head -1)
-        echo "DerivedData app: $APP_PATH"
-        echo "Build dir app: $BUILD_PATH"
+        APP_PATH="DerivedData/Build/Products/Release-iphoneos/Whitelist.app"
+        test -d "$APP_PATH" || { echo "ERROR: $APP_PATH not found"; exit 1; }
         chmod a+x bin/ldid
-        if [ -n "$BUILD_PATH" ]; then
-          bin/ldid -S"entitlements.plist" "$BUILD_PATH"
-          rm -rf Payload
-          mkdir Payload
-          cp -r "$BUILD_PATH" Payload
-        elif [ -n "$APP_PATH" ]; then
-          bin/ldid -S"entitlements.plist" "$APP_PATH"
-          rm -rf Payload
-          mkdir Payload
-          cp -r "$APP_PATH" Payload
-        else
-          echo "ERROR: Whitelist.app not found!"
-          find DerivedData -name "*.app" -type d 2>/dev/null
-          find build -name "*.app" -type d 2>/dev/null
-          exit 1
-        fi
+        bin/ldid -S"entitlements.plist" "$APP_PATH"
+        rm -rf Payload
+        mkdir Payload
+        cp -r "$APP_PATH" Payload
         zip -r Whitelist.ipa Payload
 
     - name: Upload IPA

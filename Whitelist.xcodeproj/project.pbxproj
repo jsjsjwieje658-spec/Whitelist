@@ -29,27 +29,7 @@
 		D6EA85BC298DC9C0003CADA1 /* FileContentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6EA85BB298DC9C0003CADA1 /* FileContentsView.swift */; };
 		D6EA85BE298DDB35003CADA1 /* Haptic++.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6EA85BD298DDB35003CADA1 /* Haptic++.swift */; };
 		WL0001002A00000001 /* kernel_exploit.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000001 /* kernel_exploit.c */; };
-		WL0001002A00000002 /* whitelist_primitives.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000002 /* whitelist_primitives.c */; };
-		WL0001002A00000003 /* clearsword_poc.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000003 /* clearsword_poc.c */; };
-		WL0001002A00000004 /* clearsword_krw.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000004 /* clearsword_krw.c */; };
-		WL0001002A00000005 /* clearsword_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000005 /* clearsword_socket.c */; };
-		WL0001002A00000006 /* clearsword_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000006 /* clearsword_utils.c */; };
-		WL0001002A00000007 /* free_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000007 /* free_thread.c */; };
-		WL0001002A00000008 /* phys_oob.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000008 /* phys_oob.c */; };
-		WL0001002A00000009 /* surface.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000009 /* surface.c */; };
 		WL0001002A00000010 /* KernelExploitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000010 /* KernelExploitManager.swift */; };
-		WL0002002A00000001 /* ppl_bypass.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000001 /* ppl_bypass.c */; };
-		WL0002002A00000002 /* momentarius.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000003 /* momentarius/momentarius.c */; };
-		WL0002002A00000003 /* momentarius_a12.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000005 /* momentarius/momentarius_a12.c */; };
-		WL0002002A00000004 /* momentarius_a13.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000006 /* momentarius/momentarius_a13.c */; };
-		WL0002002A00000005 /* utils.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000007 /* momentarius/utils.c */; };
-		WL0002002A00000006 /* IOGPUDevice.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000009 /* titan/IOGPUDevice.c */; };
-		WL0002002A00000007 /* gfx.m in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000013 /* titan/gfx.m */; };
-		WL0002002A00000008 /* gfx_patchfinder.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000014 /* titan/gfx_patchfinder.c */; };
-		WL0002002A00000009 /* info.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000015 /* titan/info.c */; };
-		WL0002002A00000010 /* ipc_port.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000017 /* titan/ipc_port.c */; };
-		WL0002002A00000011 /* kernel_patchfinder.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000019 /* titan/kernel_patchfinder.c */; };
-		WL0002002A00000012 /* titan.m in Sources */ = {isa = PBXBuildFile; fileRef = WL0002001A00000025 /* titan/titan.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -503,27 +483,7 @@
 				D6EA85BC298DC9C0003CADA1 /* FileContentsView.swift in Sources */,
 				D6EA85B8298DAEBC003CADA1 /* Common.swift in Sources */,
 				WL0001002A00000001 /* kernel_exploit.c in Sources */,
-				WL0001002A00000002 /* whitelist_primitives.c in Sources */,
-				WL0001002A00000003 /* clearsword_poc.c in Sources */,
-				WL0001002A00000004 /* clearsword_krw.c in Sources */,
-				WL0001002A00000005 /* clearsword_socket.c in Sources */,
-				WL0001002A00000006 /* clearsword_utils.c in Sources */,
-				WL0001002A00000007 /* free_thread.c in Sources */,
-				WL0001002A00000008 /* phys_oob.c in Sources */,
-				WL0001002A00000009 /* surface.c in Sources */,
 				WL0001002A00000010 /* KernelExploitManager.swift in Sources */,
-				WL0002002A00000001 /* ppl_bypass.c in Sources */,
-				WL0002002A00000002 /* momentarius.c in Sources */,
-				WL0002002A00000003 /* momentarius_a12.c in Sources */,
-				WL0002002A00000004 /* momentarius_a13.c in Sources */,
-				WL0002002A00000005 /* utils.c in Sources */,
-				WL0002002A00000006 /* IOGPUDevice.c in Sources */,
-				WL0002002A00000007 /* gfx.m in Sources */,
-				WL0002002A00000008 /* gfx_patchfinder.c in Sources */,
-				WL0002002A00000009 /* info.c in Sources */,
-				WL0002002A00000010 /* ipc_port.c in Sources */,
-				WL0002002A00000011 /* kernel_patchfinder.c in Sources */,
-				WL0002002A00000012 /* titan.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
