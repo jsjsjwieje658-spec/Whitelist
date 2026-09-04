@@ -20,20 +20,8 @@ jobs:
     - name: Clean
       run: make clean
 
-    - name: Resolve Packages & Build
-      run: |
-        xcodebuild -project Whitelist.xcodeproj \
-          -target Whitelist \
-          -configuration Release \
-          -sdk iphoneos \
-          -resolvePackageDependencies \
-          CODE_SIGN_IDENTITY="" \
-          CODE_SIGNING_REQUIRED=NO \
-          CODE_SIGNING_ALLOWED=NO \
-          ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS=NO \
-          ENABLE_PREVIEWS=NO \
-          DEVELOPMENT_ASSET_PATHS="" \
-          build
+    - name: Build
+      run: make build
 
     - name: Package IPA
       run: |
