@@ -7,23 +7,17 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-14
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Select Xcode
       run: |
-        ls /Applications/Xcode_*.app 2>/dev/null || true
-        sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer || true
+        sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
         xcodebuild -version
 
-    - name: Verify build tools
-      run: |
-        xcodebuild -version
-        swift --version
-
-    - name: Clean previous artifacts
+    - name: Clean
       run: make clean
 
     - name: Build
