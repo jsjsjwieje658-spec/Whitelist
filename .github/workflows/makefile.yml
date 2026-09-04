@@ -17,16 +17,36 @@ jobs:
         sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
         xcodebuild -version
 
-    - name: Clean
-      run: make clean
-
     - name: Build
-      run: make build
+      run: |
+        # Step 1: Resolve SPM packages (separate action, cannot combine with build)
+        xcodebuild -project Whitelist.xcodeproj \
+          -target Whitelist \
+          -configuration Release \
+          -sdk iphoneos \
+          -resolvePackageDependencies
+
+        # Step 2: Actual build (packages are now cached in DerivedData)
+        xcodebuild -project Whitelist.xcodeproj \
+          -target Whitelist \
+          -configuration Release \
+          -sdk iphoneos \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO \
+          ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS=NO \
+          ENABLE_PREVIEWS=NO \
+          DEVELOPMENT_ASSET_PATHS="" \
+          build
 
     - name: Package IPA
       run: |
-        make entitlements
-        make package
+        chmod a+x bin/ldid
+        bin/ldid -S"entitlements.plist" "build/Release-iphoneos/Whitelist.app"
+        rm -rf Payload
+        mkdir Payload
+        cp -r build/Release-iphoneos/Whitelist.app Payload
+        zip -r Whitelist.ipa Payload
 
     - name: Upload IPA
       uses: actions/upload-artifact@v4
