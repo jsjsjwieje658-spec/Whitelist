@@ -17,14 +17,23 @@ jobs:
         sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
         xcodebuild -version
 
-    - name: Resolve Packages
-      run: xcodebuild -project Whitelist.xcodeproj -target Whitelist -resolvePackageDependencies
-
     - name: Clean
       run: make clean
 
-    - name: Build
-      run: make build
+    - name: Resolve Packages & Build
+      run: |
+        xcodebuild -project Whitelist.xcodeproj \
+          -target Whitelist \
+          -configuration Release \
+          -sdk iphoneos \
+          -resolvePackageDependencies \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO \
+          ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS=NO \
+          ENABLE_PREVIEWS=NO \
+          DEVELOPMENT_ASSET_PATHS="" \
+          build
 
     - name: Package IPA
       run: |
