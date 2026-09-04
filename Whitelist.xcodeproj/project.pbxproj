@@ -122,10 +122,10 @@
                 WL0001001A00000030 /* libjailbreak */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libjailbreak; sourceTree = "<group>"; };
                 WL0002001A00000001 /* ppl_bypass.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ppl_bypass.c; sourceTree = "<group>"; };
                 WL0002001A00000002 /* ppl_bypass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ppl_bypass.h; sourceTree = "<group>"; };
-                WL0002001A00000003 /* momentarius.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = momentarius/momentarius.c; sourceTree = "<group>"; };
-                WL0002001A00000004 /* momentarius.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = momentarius/momentarius.h; sourceTree = "<group>"; };
-                WL0002001A00000005 /* momentarius_a12.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = momentarius/momentarius_a12.c; sourceTree = "<group>"; };
-                WL0002001A00000006 /* momentarius_a13.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = momentarius/momentarius_a13.c; sourceTree = "<group>"; };
+                WL0002001A00000003 /* momentarius.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = momentarius.c; sourceTree = "<group>"; };
+                WL0002001A00000004 /* momentarius.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = momentarius.h; sourceTree = "<group>"; };
+                WL0002001A00000005 /* momentarius_a12.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = momentarius_a12.c; sourceTree = "<group>"; };
+                WL0002001A00000006 /* momentarius_a13.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = momentarius_a13.c; sourceTree = "<group>"; };
                 WL0002001A00000007 /* utils.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = momentarius/utils.c; sourceTree = "<group>"; };
                 WL0002001A00000008 /* utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = momentarius/utils.h; sourceTree = "<group>"; };
                 WL0002001A00000009 /* IOGPUDevice.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = titan/IOGPUDevice.c; sourceTree = "<group>"; };
@@ -142,9 +142,9 @@
                 WL0002001A00000020 /* kernel_patchfinder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/kernel_patchfinder.h; sourceTree = "<group>"; };
                 WL0002001A00000021 /* mach_vm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/mach_vm.h; sourceTree = "<group>"; };
                 WL0002001A00000022 /* offsets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/offsets.h; sourceTree = "<group>"; };
-                WL0002001A00000023 /* titan.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan/titan.h; sourceTree = "<group>"; };
+                WL0002001A00000023 /* titan.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = titan.h; sourceTree = "<group>"; };
                 WL0002001A00000024 /* info.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = titan/info.c; sourceTree = "<group>"; };
-                WL0002001A00000025 /* titan.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = titan/titan.m; sourceTree = "<group>"; };
+                WL0002001A00000025 /* titan.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = titan.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
