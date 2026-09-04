@@ -159,6 +159,10 @@ func getExploitStatus() -> String {
         return "✅ Kernel exploit active"
     } else if manager.isExploitRunning {
         return "⏳ Kernel exploit running..."
+    } else if !manager.isSupported {
+        // Anti-freeze: unsupported devices never arm the kernel exploit;
+        // the app runs purely on the legacy CVE-2022-46689 method.
+        return "🐢 No kernel exploit for this device - legacy method"
     } else if let error = manager.lastError {
         return "❌ \(error)"
     } else {

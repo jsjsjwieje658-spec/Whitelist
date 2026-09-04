@@ -108,19 +108,30 @@ struct WhitelistApp: App {
     }
     
     /// Initialize the kernel exploit subsystem.
-    /// This runs the ClearSword exploit from Dopamine in the background.
+    ///
+    /// Anti-freeze: only arms the exploit when the device/iOS combo is in the
+    /// strict support matrix (ClearSword on iOS 17+ arm64e, kfd/landa on
+    /// allow-listed iOS 16 builds such as iPhone 8 Plus 16.7.16). Unsupported
+    /// devices skip straight to the legacy CVE-2022-46689 method and the
+    /// kernel is never touched at launch.
     private func initializeKernelExploit() {
         let manager = KernelExploitManager.shared
-        
+
         // Don't re-initialize if already successful
         guard !manager.isExploitSuccessful else { return }
-        
-        os_log(.info, "Initializing kernel exploit (ClearSword)...")
-        
+
+        // Never even arm the exploit on unsupported devices.
+        guard manager.isSupported else {
+            os_log(.info, "Kernel exploit not supported on this device/iOS - legacy method only")
+            return
+        }
+
+        os_log(.info, "Initializing kernel exploit...")
+
         manager.runExploit { success, error in
             if success {
                 os_log(.info, "Kernel exploit ready! KRW primitives established.")
-                
+
                 // Attempt to unsandbox using kernel primitives
                 let unsandboxed = manager.unsandbox()
                 if unsandboxed {

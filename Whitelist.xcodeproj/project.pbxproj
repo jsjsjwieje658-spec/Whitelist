@@ -29,6 +29,7 @@
                 D6EA85BC298DC9C0003CADA1 /* FileContentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6EA85BB298DC9C0003CADA1 /* FileContentsView.swift */; };
                 D6EA85BE298DDB35003CADA1 /* Haptic++.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6EA85BD298DDB35003CADA1 /* Haptic++.swift */; };
                 WL0001002A00000001 /* kernel_exploit.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000001 /* kernel_exploit.c */; };
+                WL0001002B00000031 /* wl_kfd.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000032 /* wl_kfd.c */; };
                 WL0001002A00000002 /* whitelist_primitives.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000002 /* whitelist_primitives.c */; };
                 WL0001002A00000003 /* clearsword_poc.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000003 /* clearsword_poc.c */; };
                 WL0001002A00000004 /* clearsword_krw.c in Sources */ = {isa = PBXBuildFile; fileRef = WL0001001A00000004 /* clearsword_krw.c */; };
@@ -99,6 +100,8 @@
                 D6EA85BB298DC9C0003CADA1 /* FileContentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileContentsView.swift; sourceTree = "<group>"; };
                 D6EA85BD298DDB35003CADA1 /* Haptic++.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Haptic++.swift"; sourceTree = "<group>"; };
                 WL0001001A00000001 /* kernel_exploit.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = kernel_exploit.c; sourceTree = "<group>"; };
+                WL0001001A00000031 /* wl_kfd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = wl_kfd.h; sourceTree = "<group>"; };
+                WL0001001A00000032 /* wl_kfd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = wl_kfd.c; sourceTree = "<group>"; };
                 WL0001001A00000002 /* whitelist_primitives.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = whitelist_primitives.c; sourceTree = "<group>"; };
                 WL0001001A00000003 /* clearsword_poc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = clearsword_poc.c; sourceTree = "<group>"; };
                 WL0001001A00000004 /* clearsword_krw.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = clearsword_krw.c; sourceTree = "<group>"; };
@@ -277,6 +280,8 @@
                         children = (
                                 WL0001001A00000011 /* kernel_exploit.h */,
                                 WL0001001A00000001 /* kernel_exploit.c */,
+                                WL0001001A00000031 /* wl_kfd.h */,
+                                WL0001001A00000032 /* wl_kfd.c */,
                                 WL0001001A00000012 /* whitelist_primitives.h */,
                                 WL0001001A00000002 /* whitelist_primitives.c */,
                                 WL0001001A00000013 /* clearsword_common.h */,
@@ -503,6 +508,7 @@
                                 D6EA85BC298DC9C0003CADA1 /* FileContentsView.swift in Sources */,
                                 D6EA85B8298DAEBC003CADA1 /* Common.swift in Sources */,
                                 WL0001002A00000001 /* kernel_exploit.c in Sources */,
+                                WL0001002B00000031 /* wl_kfd.c in Sources */,
                                 WL0001002A00000002 /* whitelist_primitives.c in Sources */,
                                 WL0001002A00000003 /* clearsword_poc.c in Sources */,
                                 WL0001002A00000004 /* clearsword_krw.c in Sources */,
